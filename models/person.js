@@ -27,7 +27,7 @@ const personSchema = new mongoose.Schema({
         const phonenumber = v.split('-')
           return /^(?:\d{2}|\d{3})-\d+$/.test(v);
       },
-      message: "Not a valid phone number. Phone number must be of form xxx-xxx-xxxx and consist of numbers."
+      message: "Not a valid phone number. Phone number must be of form xx-xxxxxx or xxx-xxxxxx, have at least 8 characters and consist of numbers."
     },
     required: true
   } 
