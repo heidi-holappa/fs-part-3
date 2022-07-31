@@ -110,7 +110,8 @@ app.post('/api/persons', (request, response) => {
     const person = new Person({
       name: body.name,
       number: body.number,
-      id: getRandomInt(1000000),
+      /* For exercise 3.5
+      id: getRandomInt(1000000), */
     })
   
     person
