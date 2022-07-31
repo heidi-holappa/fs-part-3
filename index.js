@@ -13,7 +13,7 @@ app.use(cors())
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-let persons = [
+/* let persons = [
     {
       id: 1,
       name: "Arto Hellas",
@@ -34,18 +34,25 @@ let persons = [
         name: "Mary Poppendick",
         number: "39-23-6423122"
     },
-  ]
+  ] */
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1>')
 })
 
 app.get('/info', (req, res) => {
-    res.send(
-        `<p>Phonebook has info for ${persons.length} people</p>
+  Person
+    .estimatedDocumentCount()  
+    .then(docCount => {
+      res.send(
+        `<p>Phonebook has info for ${docCount} people</p>
         
         ${Date()}`
-    )
+      )
+    })
+    .catch(err => {
+      console.log('Some error stuff happened')
+    })
 })
 
 app.get('/api/persons', (request, response) => {
