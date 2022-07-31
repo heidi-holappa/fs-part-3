@@ -7,7 +7,6 @@ const app = express()
 
 app.use(express.static('build'))
 app.use(express.json())
-/* app.use(requestLogger) */
 app.use(cors())
 
 morgan.token('body', (req, res) => JSON.stringify(req.body));
@@ -17,7 +16,7 @@ app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1>')
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (request, response, next) => {
   Person
     .estimatedDocumentCount()  
     .then(docCount => {
@@ -27,9 +26,7 @@ app.get('/info', (req, res) => {
         ${Date()}`
       )
     })
-    .catch(err => {
-      console.log('Some error stuff happened')
-    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, response) => {
@@ -38,6 +35,7 @@ app.get('/api/persons', (request, response) => {
       .then(persons => {
         response.json(persons)
       })
+      .catch(error => next(error))
 })
 
 /*  For exercise 3.5, removed for later exercises.
@@ -50,11 +48,11 @@ app.get('/api/persons/:id', (request, response) => {
     } else {
         response.status(404).end()
     }
-  }) */
+  }) 
 
 const getRandomInt = (max) => {
     return Math.floor(Math.random() * max)
-} 
+} */
 
 app.get('/api/persons/:id', (request, response, next) => {
     Person
@@ -70,7 +68,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
     if (!body.name || !body.number) {
       return response.status(400).json({ 
@@ -90,6 +88,7 @@ app.post('/api/persons', (request, response) => {
       .then(savedPerson => {
         response.json(savedPerson)
       })
+      .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -99,10 +98,6 @@ app.delete('/api/persons/:id', (request, response) => {
     })
     .catch(error => next(error))
 })
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
 
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
@@ -118,6 +113,10 @@ app.put('/api/persons/:id', (request, response, next) => {
     })
     .catch(error => next(error))
 }) 
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
 
 app.use(unknownEndpoint)
 
